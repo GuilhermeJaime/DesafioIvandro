@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Gestor de Tarefas</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="app">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="brand">
+          <span class="logo">📌</span>
+          <span data-i18n="brand">Pendência</span>
+        </div>
+        <button id="openDrawer" class="btn btn-primary w-100" data-i18n="addTask">+ Adicionar Tarefa</button>
+
+        <nav class="menu">
+          <button class="menu-item active" data-view="today">
+            <span class="icon">☀️</span><span data-i18n="today">Meu Dia</span>
+          </button>
+          <button class="menu-item" data-view="favorites">
+            <span class="icon">⭐</span><span data-i18n="favorites">Favoritos</span>
+          </button>
+          <button class="menu-item" data-view="inbox">
+            <span class="icon">📝</span><span data-i18n="tasks">Tarefas</span>
+          </button>
+          <button class="menu-item" data-view="assigned">
+            <span class="icon">👤</span><span data-i18n="assigned">Atribuído</span>
+          </button>
+          <button class="menu-item danger" data-view="trash">
+            <span class="icon">🗑️</span><span data-i18n="trash">Excluídos</span>
+          </button>
+        </nav>
+
+        <div class="labels-block">
+          <div class="labels-title" data-i18n="labels">Etiquetas</div>
+          <ul class="labels">
+            <li><span class="dot low"></span><span data-i18n="low">Baixo</span></li>
+            <li><span class="dot medium"></span><span data-i18n="medium">Médio</span></li>
+            <li><span class="dot high"></span><span data-i18n="high">Alto</span></li>
+            <li><span class="dot update"></span><span data-i18n="update">Atualizar</span></li>
+          </ul>
+        </div>
+
+        <div class="sidebar-footer">
+          <button id="toggleTheme" class="btn btn-ghost" title="Toggle theme">🌓 <span
+              data-i18n="theme">Tema</span></button>
+          <button id="toggleLang" class="btn btn-ghost" title="Switch language">🌐 <span
+              id="langLabel">PT</span></button>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="main">
+        <header class="topbar">
+          <h1 id="viewTitle" data-i18n="today">Meu Dia</h1>
+          <div class="top-actions">
+            <input id="search" class="input" type="search" placeholder="Search here..."
+              data-placeholder-pt="Pesquisar..." data-placeholder-en="Search here...">
+            <button id="openDrawerTop" class="btn btn-primary" data-i18n="addTask">+ Adicionar Tarefa</button>
+          </div>
+        </header>
+
+        <ul id="taskList" class="task-list"></ul>
+
+        <div id="emptyState" class="empty">
+          <div class="empty-emoji">🗂️</div>
+          <div class="empty-title" data-i18n="noTasksTitle">Nada por aqui</div>
+          <div class="empty-sub" data-i18n="noTasksSub">Adicione uma nova tarefa para começar.</div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Drawer (Painel lateral) -->
+    <aside id="drawer" class="drawer">
+      <div class="drawer-header">
+        <h2 data-i18n="newTask">+ Adicionar Nova Tarefa</h2>
+        <button id="closeDrawer" class="icon-btn" aria-label="Close">✖</button>
+      </div>
+      <div class="drawer-body">
+        <label class="field">
+          <span data-i18n="title">Título</span>
+          <input id="f_title" class="input" type="text" placeholder="">
+        </label>
+
+        <div class="grid-2">
+          <label class="field">
+            <span data-i18n="date">Data</span>
+            <input id="f_date" class="input" type="date">
+          </label>
+          <label class="field">
+            <span data-i18n="time">Hora</span>
+            <input id="f_time" class="input" type="time">
+          </label>
+        </div>
+
+        <label class="field">
+          <span data-i18n="priority">Prioridade</span>
+          <select id="f_priority" class="input">
+            <option value="" disabled selected data-i18n="selectPriority">Selecione prioridade</option>
+            <option value="low" data-i18n="low">Baixa</option>
+            <option value="medium" data-i18n="medium">Média</option>
+            <option value="high" data-i18n="high">Alta</option>
+            <option value="update" data-i18n="update">Atualizar</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span data-i18n="label">Etiqueta</span>
+          <input id="f_label" class="input" type="text" placeholder="">
+        </label>
+
+        <label class="field">
+          <span data-i18n="assignee">Atribuído a</span>
+          <select id="f_assignee" class="input">
+            <option value="" selected data-i18n="selectMember">Selecione um membro</option>
+            <option>Guilherme</option>
+            <option>Ana</option>
+            <option>João</option>
+            <option>Maria</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span data-i18n="description">Descrição</span>
+          <textarea id="f_desc" class="input" rows="4"></textarea>
+        </label>
+      </div>
+      <div class="drawer-footer">
+        <button id="cancelDrawer" class="btn btn-ghost" data-i18n="cancel">Cancelar</button>
+        <button id="submitTask" class="btn btn-primary" data-i18n="addTaskShort">+ Adicionar Tarefa</button>
+      </div>
+    </aside>
+
+    <!-- Backdrop -->
+    <div id="backdrop" class="backdrop"></div>
+
+    <!-- Confirm dialog -->
+    <div id="confirm" class="confirm">
+      <div class="confirm-card">
+        <div class="confirm-icon">⚠️</div>
+        <div class="confirm-title" data-i18n="confirmTitle">Tens a certeza?</div>
+        <div class="confirm-sub" data-i18n="confirmSub">Esta tarefa irá para os Excluídos. Podes recuperar depois.</div>
+        <div class="confirm-actions">
+          <button id="confirmCancel" class="btn btn-ghost" data-i18n="no">Não</button>
+          <button id="confirmOk" class="btn btn-danger" data-i18n="yesDelete">Sim, excluir</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="scripts.js"></script>
+  </body>
+
+</html>
